@@ -1,0 +1,23 @@
+# Node
+node_modules/
+
+# Strapi
+backend/node_modules/
+backend/.tmp/
+backend/build/
+backend/dist/
+backend/.cache/
+backend/.env
+
+# Astro
+frontend/node_modules/
+frontend/dist/
+frontend/.astro/
+frontend/.env
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
