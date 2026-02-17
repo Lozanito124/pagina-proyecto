@@ -1,0 +1,29 @@
+{
+  "kind": "singleType",
+  "collectionName": "game_pages",
+  "info": {
+    "singularName": "game-page",
+    "pluralName": "game-pages",
+    "displayName": "gamePage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "h1": {
+      "type": "string",
+      "required": true
+    },
+    "intro": {
+      "type": "text",
+      "required": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": true,
+      "required": true
+    }
+  }
+}
