@@ -107,43 +107,6 @@ export interface AdminApiTokenPermission extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface AdminAuditLog extends Struct.CollectionTypeSchema {
-  collectionName: 'strapi_audit_logs';
-  info: {
-    displayName: 'Audit Log';
-    pluralName: 'audit-logs';
-    singularName: 'audit-log';
-  };
-  options: {
-    draftAndPublish: false;
-    timestamps: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    action: Schema.Attribute.String & Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    date: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'admin::audit-log'> &
-      Schema.Attribute.Private;
-    payload: Schema.Attribute.JSON;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user: Schema.Attribute.Relation<'oneToOne', 'admin::user'>;
-  };
-}
-
 export interface AdminPermission extends Struct.CollectionTypeSchema {
   collectionName: 'admin_permissions';
   info: {
@@ -467,6 +430,151 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiArticlePageArticlePage extends Struct.SingleTypeSchema {
+  collectionName: 'article_pages';
+  info: {
+    displayName: 'articlePage';
+    pluralName: 'article-pages';
+    singularName: 'article-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    backLabel: Schema.Attribute.String;
+    coverPlaceholder: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    emptyIcon: Schema.Attribute.String;
+    emptySub: Schema.Attribute.String;
+    emptyTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::article-page.article-page'
+    > &
+      Schema.Attribute.Private;
+    notFoundBtn: Schema.Attribute.String;
+    notFoundSub: Schema.Attribute.String;
+    notFoundTitle: Schema.Attribute.String;
+    pageSubtitle: Schema.Attribute.String;
+    pageTag: Schema.Attribute.String;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    readingTimeSuffix: Schema.Attribute.String;
+    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiArticleArticle extends Struct.CollectionTypeSchema {
+  collectionName: 'articles';
+  info: {
+    displayName: 'Article';
+    pluralName: 'articles';
+    singularName: 'article';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    author: Schema.Attribute.String;
+    content: Schema.Attribute.RichText;
+    cover: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    excerpt: Schema.Attribute.RichText;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::article.article'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    readingTime: Schema.Attribute.Integer;
+    slug: Schema.Attribute.UID<'title'>;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCategoriesPageCategoriesPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'categories_pages';
+  info: {
+    displayName: 'categoriesPage';
+    pluralName: 'categories-pages';
+    singularName: 'categories-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    emptyText: Schema.Attribute.String;
+    exploreLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Explorar'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::categories-page.categories-page'
+    > &
+      Schema.Attribute.Private;
+    pageSubtitle: Schema.Attribute.String;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCategoryPageCategoryPage extends Struct.SingleTypeSchema {
+  collectionName: 'category_pages';
+  info: {
+    displayName: 'categoryPage';
+    pluralName: 'category-pages';
+    singularName: 'category-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    backLabel: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    emptyText: Schema.Attribute.String;
+    gamesCountLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'juegos'>;
+    gamesTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::category-page.category-page'
+    > &
+      Schema.Attribute.Private;
+    notFoundBtn: Schema.Attribute.String;
+    notFoundTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   collectionName: 'categories';
   info: {
@@ -478,10 +586,15 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    accentColor: Schema.Attribute.String;
+    bgColor: Schema.Attribute.String;
+    borderColor: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    games: Schema.Attribute.Relation<'manyToMany', 'api::game.game'>;
+    description: Schema.Attribute.Text;
+    games: Schema.Attribute.Relation<'oneToMany', 'api::game.game'>;
+    icon: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -489,7 +602,9 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.BigInteger & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    Seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -508,20 +623,30 @@ export interface ApiGamePageGamePage extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    backLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'\u2190 Volver a juegos'>;
+    categoryLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Categor\u00EDa'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    h1: Schema.Attribute.String & Schema.Attribute.Required;
-    intro: Schema.Attribute.Text & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::game-page.game-page'
     > &
       Schema.Attribute.Private;
+    notFoundBtn: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Ver todos los juegos'>;
+    notFoundSub: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'El juego que buscas no existe o fue eliminado.'>;
+    notFoundTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Juego no encontrado'>;
     publishedAt: Schema.Attribute.DateTime;
-    seo: Schema.Attribute.Component<'shared.seo', true> &
-      Schema.Attribute.Required;
+    relatedTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Juegos relacionados'>;
+    releaseDateLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Fecha de lanzamiento'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -539,26 +664,139 @@ export interface ApiGameGame extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    categories: Schema.Attribute.Relation<
-      'manyToMany',
-      'api::category.category'
+    category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
+    cover: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
     >;
-    cover: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks;
-    excerpt: Schema.Attribute.Text;
+    description: Schema.Attribute.RichText;
+    games: Schema.Attribute.Relation<'manyToMany', 'api::game.game'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::game.game'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    rating: Schema.Attribute.Decimal;
-    releaseDate: Schema.Attribute.Date;
-    seo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.Required;
-    slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
+    related_games: Schema.Attribute.Relation<'manyToMany', 'api::game.game'>;
+    release_date: Schema.Attribute.Date;
+    slug: Schema.Attribute.UID<'title'>;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGamesPageGamesPage extends Struct.SingleTypeSchema {
+  collectionName: 'games_pages';
+  info: {
+    displayName: 'gamesPage';
+    pluralName: 'games-pages';
+    singularName: 'games-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    allCategoriesLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Todas las categor\u00EDas'>;
+    btnResetLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Limpiar filtros'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    emptySub: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'No hay juegos que coincidan con tu b\u00FAsqueda.'>;
+    emptyTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Sin resultados'>;
+    loadingText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Cargando juegos...'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::games-page.games-page'
+    > &
+      Schema.Attribute.Private;
+    pageSubtitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Explora todo el cat\u00E1logo. Busca, filtra y ordena.'>;
+    pageTag: Schema.Attribute.String;
+    pageTitle: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Juegos'>;
+    publishedAt: Schema.Attribute.DateTime;
+    resultsLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'juegos encontrados'>;
+    searchPlaceholder: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Buscar juegos...'>;
+    sortDateAsc: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'M\u00E1s antiguos'>;
+    sortDateDesc: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'M\u00E1s recientes'>;
+    sortTitleAsc: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'T\u00EDtulo A - Z'>;
+    sortTitleDesc: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'T\u00EDtulo Z - A'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
+  collectionName: 'home_pages';
+  info: {
+    displayName: 'homePage';
+    pluralName: 'home-pages';
+    singularName: 'home-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    articlesEmptyText: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Pr\u00F3ximamente...'>;
+    articlesLinkHref: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'/articles'>;
+    articlesLinkLabel: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'Ver todos \u2192'>;
+    articlesSectionTitle: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'\u00DAltimos art\u00EDculos'>;
+    categoriesEmptyText: Schema.Attribute.String;
+    categoriesLinkHref: Schema.Attribute.String;
+    categoriesLinkLabel: Schema.Attribute.String;
+    categoriesSectionTitle: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    cta1Href: Schema.Attribute.String;
+    cta1Label: Schema.Attribute.String;
+    cta1Variant: Schema.Attribute.Enumeration<['primary', 'ghost']>;
+    cta2Href: Schema.Attribute.String;
+    cta2Label: Schema.Attribute.String;
+    cta2Variant: Schema.Attribute.Enumeration<['primary', 'gosht']>;
+    cta3Href: Schema.Attribute.String;
+    cta3Label: Schema.Attribute.String;
+    cta3Variant: Schema.Attribute.Enumeration<['primary', 'gosht']>;
+    gamesEmptyText: Schema.Attribute.String;
+    gamesLinkHref: Schema.Attribute.String;
+    gamesLinkLabel: Schema.Attribute.String;
+    gamesSectionTitle: Schema.Attribute.String;
+    heroSubtitle: Schema.Attribute.Text;
+    heroTag: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'GameVault'>;
+    heroTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    heroTitleAccent: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::home-page.home-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    statCategoriesLabel: Schema.Attribute.String;
+    statCustomLabel: Schema.Attribute.String;
+    statCustomValue: Schema.Attribute.String;
+    statGamesLabel: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1070,16 +1308,21 @@ declare module '@strapi/strapi' {
     export interface ContentTypeSchemas {
       'admin::api-token': AdminApiToken;
       'admin::api-token-permission': AdminApiTokenPermission;
-      'admin::audit-log': AdminAuditLog;
       'admin::permission': AdminPermission;
       'admin::role': AdminRole;
       'admin::session': AdminSession;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::article-page.article-page': ApiArticlePageArticlePage;
+      'api::article.article': ApiArticleArticle;
+      'api::categories-page.categories-page': ApiCategoriesPageCategoriesPage;
+      'api::category-page.category-page': ApiCategoryPageCategoryPage;
       'api::category.category': ApiCategoryCategory;
       'api::game-page.game-page': ApiGamePageGamePage;
       'api::game.game': ApiGameGame;
+      'api::games-page.games-page': ApiGamesPageGamesPage;
+      'api::home-page.home-page': ApiHomePageHomePage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

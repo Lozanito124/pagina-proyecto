@@ -1,0 +1,70 @@
+{
+  "kind": "singleType",
+  "collectionName": "games_pages",
+  "info": {
+    "singularName": "games-page",
+    "pluralName": "games-pages",
+    "displayName": "gamesPage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pageTitle": {
+      "type": "string",
+      "default": "Juegos"
+    },
+    "pageSubtitle": {
+      "type": "string",
+      "default": "Explora todo el catálogo. Busca, filtra y ordena."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Buscar juegos..."
+    },
+    "allCategoriesLabel": {
+      "type": "string",
+      "default": "Todas las categorías"
+    },
+    "loadingText": {
+      "type": "string",
+      "default": "Cargando juegos..."
+    },
+    "emptyTitle": {
+      "type": "string",
+      "default": "Sin resultados"
+    },
+    "emptySub": {
+      "type": "string",
+      "default": "No hay juegos que coincidan con tu búsqueda."
+    },
+    "btnResetLabel": {
+      "type": "string",
+      "default": "Limpiar filtros"
+    },
+    "sortTitleAsc": {
+      "type": "string",
+      "default": "Título A - Z"
+    },
+    "sortTitleDesc": {
+      "type": "string",
+      "default": "Título Z - A"
+    },
+    "sortDateDesc": {
+      "type": "string",
+      "default": "Más recientes"
+    },
+    "sortDateAsc": {
+      "type": "string",
+      "default": "Más antiguos"
+    },
+    "resultsLabel": {
+      "type": "string",
+      "default": "juegos encontrados"
+    },
+    "pageTag": {
+      "type": "string"
+    }
+  }
+}

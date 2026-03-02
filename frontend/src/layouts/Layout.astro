@@ -1,23 +1,131 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import "../styles/global.css";
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title:       string;
+  description?: string;
+  image?:      string;
+}
+
+const {
+  title,
+  description = "GameVault – El mejor catálogo de videojuegos. Descubre análisis, guías y reseñas de los mejores juegos.",
+  image,
+} = Astro.props;
+
+const SITE      = import.meta.env.SITE ?? "https://gamevault.es";
+const canonical = new URL(Astro.url.pathname, SITE).href;
+const ogImage   = image ?? `${SITE}/og-default.png`;
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- SEO primario -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="GameVault" />
+  <meta property="og:url"         content={canonical} />
+  <meta property="og:title"       content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image"       content={ogImage} />
+  <meta property="og:locale"      content="es_ES" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image"       content={ogImage} />
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+
+<body class="bg-zinc-950 text-zinc-100 font-sans antialiased">
+
+  <!-- HEADER -->
+  <header role="banner" class="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/90 backdrop-blur-md">
+    <nav
+      role="navigation"
+      aria-label="Navegación principal"
+      class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
+    >
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 group" aria-label="GameVault – Inicio">
+        <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center group-hover:bg-violet-500 transition-colors">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.82m5.84-2.56a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 3.5a14.98 14.98 0 00-2.07 8.87 6 6 0 015.84 2z"/>
+          </svg>
+        </div>
+        <span class="text-lg font-black text-white tracking-tight">GameVault</span>
+      </a>
+
+      <!-- Links de navegación -->
+      <ul class="flex items-center gap-1" role="list">
+        <li><a href="/categories" class="px-3.5 py-2 text-sm font-medium rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-zinc-800/60">Categorías</a></li>
+        <li><a href="/games"      class="px-3.5 py-2 text-sm font-medium rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-zinc-800/60">Juegos</a></li>
+        <li><a href="/articles"   class="px-3.5 py-2 text-sm font-medium rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-zinc-800/60">Artículos</a></li>
+        <li><a href="/contact"    class="px-3.5 py-2 text-sm font-medium rounded-lg transition-colors text-zinc-400 hover:text-white hover:bg-zinc-800/60">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="main-content" role="main" tabindex="-1">
+    <slot />
+  </main>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo" class="border-t border-zinc-800 mt-20">
+    <div class="max-w-7xl mx-auto px-6 py-10">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+
+        <!-- Brand -->
+        <div>
+          <a href="/" class="text-base font-black text-white tracking-tight">GameVault</a>
+          <p class="text-xs text-zinc-600 mt-1">El catálogo definitivo de videojuegos</p>
+        </div>
+
+        <!-- Nav footer -->
+        <nav aria-label="Navegación secundaria">
+          <ul class="flex flex-wrap gap-x-6 gap-y-2" role="list">
+            {[
+              { href: "/games",      label: "Juegos" },
+              { href: "/categories", label: "Categorías" },
+              { href: "/articles",   label: "Artículos" },
+              { href: "/contact",    label: "Contacto" },
+              { href: "/sitemap.xml",label: "Sitemap" },
+            ].map(link => (
+              <li>
+                <a href={link.href} class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-zinc-800/60">
+        <p class="text-xs text-zinc-700 text-center">
+          © {new Date().getFullYear()} GameVault
+        </p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -11,19 +11,33 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "h1": {
+    "backLabel": {
       "type": "string",
-      "required": true
+      "default": "← Volver a juegos"
     },
-    "intro": {
-      "type": "text",
-      "required": true
+    "relatedTitle": {
+      "type": "string",
+      "default": "Juegos relacionados"
     },
-    "seo": {
-      "type": "component",
-      "component": "shared.seo",
-      "repeatable": true,
-      "required": true
+    "notFoundTitle": {
+      "type": "string",
+      "default": "Juego no encontrado"
+    },
+    "notFoundSub": {
+      "type": "string",
+      "default": "El juego que buscas no existe o fue eliminado."
+    },
+    "notFoundBtn": {
+      "type": "string",
+      "default": "Ver todos los juegos"
+    },
+    "releaseDateLabel": {
+      "type": "string",
+      "default": "Fecha de lanzamiento"
+    },
+    "categoryLabel": {
+      "type": "string",
+      "default": "Categoría"
     }
   }
 }

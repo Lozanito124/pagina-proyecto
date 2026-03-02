@@ -1,0 +1,121 @@
+{
+  "kind": "singleType",
+  "collectionName": "home_pages",
+  "info": {
+    "singularName": "home-page",
+    "pluralName": "home-pages",
+    "displayName": "homePage"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heroTag": {
+      "type": "string",
+      "default": "GameVault",
+      "required": true
+    },
+    "heroTitle": {
+      "type": "string",
+      "required": true
+    },
+    "heroTitleAccent": {
+      "type": "string"
+    },
+    "heroSubtitle": {
+      "type": "text"
+    },
+    "cta1Label": {
+      "type": "string"
+    },
+    "cta1Href": {
+      "type": "string"
+    },
+    "cta1Variant": {
+      "type": "enumeration",
+      "enum": [
+        "primary",
+        "ghost"
+      ]
+    },
+    "cta2Label": {
+      "type": "string"
+    },
+    "cta2Href": {
+      "type": "string"
+    },
+    "cta2Variant": {
+      "type": "enumeration",
+      "enum": [
+        "primary",
+        "gosht"
+      ]
+    },
+    "cta3Label": {
+      "type": "string"
+    },
+    "cta3Href": {
+      "type": "string"
+    },
+    "cta3Variant": {
+      "type": "enumeration",
+      "enum": [
+        "primary",
+        "gosht"
+      ]
+    },
+    "statGamesLabel": {
+      "type": "string"
+    },
+    "statCategoriesLabel": {
+      "type": "string"
+    },
+    "statCustomValue": {
+      "type": "string"
+    },
+    "statCustomLabel": {
+      "type": "string"
+    },
+    "categoriesSectionTitle": {
+      "type": "string"
+    },
+    "categoriesLinkLabel": {
+      "type": "string"
+    },
+    "categoriesLinkHref": {
+      "type": "string"
+    },
+    "categoriesEmptyText": {
+      "type": "string"
+    },
+    "gamesSectionTitle": {
+      "type": "string"
+    },
+    "gamesLinkLabel": {
+      "type": "string"
+    },
+    "gamesLinkHref": {
+      "type": "string"
+    },
+    "gamesEmptyText": {
+      "type": "string"
+    },
+    "articlesSectionTitle": {
+      "type": "string",
+      "default": "Últimos artículos"
+    },
+    "articlesLinkLabel": {
+      "type": "string",
+      "default": "Ver todos →"
+    },
+    "articlesLinkHref": {
+      "type": "string",
+      "default": "/articles"
+    },
+    "articlesEmptyText": {
+      "type": "string",
+      "default": "Próximamente..."
+    }
+  }
+}

@@ -1,23 +1,25 @@
-# Node
+# Dependencias
 node_modules/
-
-# Strapi
-backend/node_modules/
-backend/.tmp/
-backend/build/
-backend/dist/
-backend/.cache/
-backend/.env
-
-# Astro
 frontend/node_modules/
+backend/node_modules/
+
+# Build
 frontend/dist/
 frontend/.astro/
+
+# Strapi
+backend/.tmp/
+backend/build/
+backend/exports/
+backend/.env
+
+# Frontend env
 frontend/.env
+frontend/.env.local
 
-# Logs
-*.log
-
-# OS
+# Sistema
 .DS_Store
-Thumbs.db
+*.log
+.nvm/
+.nvm/
+.nvm/

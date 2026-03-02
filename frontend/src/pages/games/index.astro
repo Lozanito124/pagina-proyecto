@@ -1,131 +1,250 @@
 ---
-const API_URL = "http://localhost:1337";
+import Layout from "../../layouts/Layout.astro";
+import { fetchJSON } from "../../lib/api";
 
-// Helper fetch JSON con error detallado
-async function getJson(path: string) {
-  const res = await fetch(`${API_URL}${path}`);
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(`Strapi ${res.status} on ${path} ${txt}`);
+let gamesPageRes = { data: null };
+let gamesRes = { data: [] };
+let categoriesRes = { data: [] };
+
+try { gamesPageRes = await fetchJSON("/api/games-page"); } catch (e) { console.error(e); }
+try { gamesRes = await fetchJSON("/api/games?populate=category&pagination%5BpageSize%5D=200"); } catch (e) { console.error(e); }
+try { categoriesRes = await fetchJSON("/api/categories?sort=order:asc&pagination%5BpageSize%5D=50"); } catch (e) { console.error(e); }
+
+const p  = gamesPageRes?.data?.attributes ?? gamesPageRes?.data ?? {};
+const ui = {
+  pageTitle: p.pageTitle,
+  pageSubtitle: p.pageSubtitle,
+  pageTag: p.pageTag,
+  searchPlaceholder: p.searchPlaceholder,
+  allCategoriesLabel: p.allCategoriesLabel,
+  loadingText: p.loadingText,
+  emptyTitle: p.emptyTitle,
+  emptySub: p.emptySub,
+  btnResetLabel: p.btnResetLabel,
+  sortTitleAsc: p.sortTitleAsc,
+  sortTitleDesc: p.sortTitleDesc,
+  sortDateDesc: p.sortDateDesc,
+  sortDateAsc: p.sortDateAsc,
+  resultsLabel: p.resultsLabel,
+};
+
+function extractText(raw: any): string {
+  if (!raw) return "";
+  if (typeof raw === "string") return raw;
+  if (Array.isArray(raw)) {
+    return raw.map((b: any) =>
+      Array.isArray(b?.children) ? b.children.map((c: any) => c?.text ?? "").join("") : ""
+    ).join(" ").trim();
   }
-  return res.json();
+  return "";
 }
 
-let page: any = null;
-let games: any[] = [];
-let error = "";
+const rawGames = gamesRes?.data ?? [];
+const games = rawGames.map((g: any) => {
+  const a = g?.attributes ?? g;
+  const catAttrs = a?.category?.data?.attributes ?? a?.category ?? null;
+  return {
+    id: g.id,
+    title: a.title,
+    slug: a.slug ?? String(g.id),
+    description: extractText(a.description),
+    release_date: a.release_date ?? null,
+    category: catAttrs?.name,
+    categorySlug: catAttrs?.slug,
+    accentColor: catAttrs?.accentColor,
+    bgColor: catAttrs?.bgColor,
+    borderColor: catAttrs?.borderColor,
+  };
+});
 
-try {
-  // ✅ Single Type: como lo llamaste "gamePage", el endpoint suele ser /api/game-page
-  // Si te diera 404, cambia a /api/gamePage?populate=*
-  const pageJson = await getJson("/api/game-page?populate=*");
-  page = pageJson.data ?? null;
-
-  // ✅ Juegos
-  const gamesJson = await getJson("/api/games?populate=*");
-  games = gamesJson.data ?? [];
-} catch (e) {
-  error = e instanceof Error ? e.message : "Unknown error";
-}
-
-// Datos page (Strapi v5 normalmente devuelve campos directos)
-const pageFields = page?.attributes ?? page ?? {};
-const pageSeo = pageFields?.seo ?? {};
-const metaTitle = pageSeo?.metaTitle ?? "Juegos | GameVault";
-const metaDescription = pageSeo?.metaDescription ?? "";
+const rawCategories = categoriesRes?.data ?? [];
+const categories = rawCategories.map((c: any) => {
+  const a = c?.attributes ?? c;
+  return { name: a.name, slug: a.slug ?? String(c.id) };
+});
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{metaTitle}</title>
-    {metaDescription && <meta name="description" content={metaDescription} />}
-  </head>
+<Layout title={"GameVault | " + ui.pageTitle}>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Outfit', sans-serif; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 0.7s linear infinite; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp 0.35s ease forwards; }
+  </style>
 
-  <body style="font-family: system-ui; margin: 24px;">
-    {error ? (
-      <p style="color: red;">Error: {error}</p>
-    ) : (
-      <>
-        <header style="margin-bottom: 18px;">
-          <h1 style="margin: 0 0 8px;">{pageFields?.h1 ?? "Juegos"}</h1>
-          {pageFields?.intro && (
-            <p style="margin: 0; opacity: 0.85; max-width: 70ch;">
-              {pageFields.intro}
-            </p>
-          )}
-        </header>
+  <div class="min-h-screen bg-zinc-950 text-zinc-100">
+    <div class="border-b border-zinc-800/60">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        {ui.pageTag && <p class="text-xs font-semibold tracking-widest text-violet-400 uppercase mb-3">{ui.pageTag}</p>}
+        <h1 class="text-5xl font-extrabold tracking-tight text-white mb-3">{ui.pageTitle}</h1>
+        {ui.pageSubtitle && <p class="text-zinc-400 text-lg">{ui.pageSubtitle}</p>}
+      </div>
+    </div>
 
-        {games.length === 0 ? (
-          <p>No hay juegos aún.</p>
-        ) : (
-          <div
-            style="
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-              gap: 16px;
-            "
-          >
-            {games.map((g) => {
-              // Strapi v5: campos directos. (Por si acaso, soporta v4 también)
-              const attrs = g.attributes ?? g;
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-wrap gap-3 py-8 items-center">
+        <div class="relative flex-1 min-w-56">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="search-input" type="text" placeholder={ui.searchPlaceholder} autocomplete="off" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl text-sm text-zinc-100 placeholder-zinc-500 pl-10 pr-4 py-3 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/30 transition-all"/>
+        </div>
 
-              const title = attrs.title;
-              const slug = attrs.slug;
-              const excerpt = attrs.excerpt;
-              const rating = attrs.rating;
+        <select id="category-filter" class="bg-zinc-900 border border-zinc-800 rounded-xl text-sm text-zinc-300 px-4 py-3 pr-9 outline-none focus:border-violet-500 cursor-pointer appearance-none transition-all hover:border-zinc-700">
+          <option value="">{ui.allCategoriesLabel}</option>
+          {categories.map((cat) => <option value={cat.slug}>{cat.name}</option>)}
+        </select>
 
-              // Cover: v5 => attrs.cover.url | v4 => attrs.cover.data.attributes.url
-              const coverUrl =
-                attrs.cover?.url
-                  ? `${API_URL}${attrs.cover.url}`
-                  : attrs.cover?.data?.attributes?.url
-                    ? `${API_URL}${attrs.cover.data.attributes.url}`
-                    : null;
+        <select id="sort-select" class="bg-zinc-900 border border-zinc-800 rounded-xl text-sm text-zinc-300 px-4 py-3 pr-9 outline-none focus:border-violet-500 cursor-pointer appearance-none transition-all hover:border-zinc-700">
+          <option value="title-asc">{ui.sortTitleAsc}</option>
+          <option value="title-desc">{ui.sortTitleDesc}</option>
+          <option value="date-desc">{ui.sortDateDesc}</option>
+          <option value="date-asc">{ui.sortDateAsc}</option>
+        </select>
+      </div>
 
-              return (
-                <a
-                  href={`/games/${slug}`}
-                  style="text-decoration: none; color: inherit;"
-                >
-                  <article
-                    style="
-                      border: 1px solid #3333;
-                      border-radius: 12px;
-                      padding: 12px;
-                    "
-                  >
-                    {coverUrl && (
-                      <img
-                        src={coverUrl}
-                        alt={title}
-                        style="
-                          width: 100%;
-                          height: 280px;
-                          object-fit: cover;
-                          border-radius: 10px;
-                        "
-                        loading="lazy"
-                      />
-                    )}
+      <p class="text-sm text-zinc-500 mb-6">
+        <span id="results-count" class="text-white font-semibold">0</span>
+        <span class="ml-1">{ui.resultsLabel}</span>
+      </p>
 
-                    <h2 style="margin: 12px 0 6px;">{title}</h2>
+      <div id="loading-state" class="hidden flex-col items-center justify-center py-24 gap-4">
+        <div class="w-9 h-9 rounded-full border-2 border-zinc-700 border-t-violet-500 spin"></div>
+        <p class="text-sm text-zinc-500">{ui.loadingText}</p>
+      </div>
 
-                    {typeof rating === "number" && (
-                      <p style="margin: 0 0 6px;">⭐ {rating}</p>
-                    )}
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-24 gap-3 text-center">
+        <p class="text-lg font-semibold text-white">{ui.emptyTitle}</p>
+        <p class="text-sm text-zinc-500">{ui.emptySub}</p>
+        <button id="btn-reset" class="mt-2 text-sm font-semibold text-violet-400 border border-violet-500/40 rounded-lg px-5 py-2.5 hover:bg-violet-500/10 transition-colors">{ui.btnResetLabel}</button>
+      </div>
 
-                    {excerpt && (
-                      <p style="margin: 0; opacity: 0.85;">{excerpt}</p>
-                    )}
-                  </article>
-                </a>
-              );
-            })}
+      <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      <div id="pagination" class="flex items-center justify-center gap-2 py-14 flex-wrap"></div>
+    </div>
+  </div>
+
+  <script define:vars={{ games, GAMES_PER_PAGE: 9 }}>
+    const DEFAULT_ACCENT = "#a1a1aa";
+    const DEFAULT_BG     = "rgba(113,113,122,0.15)";
+    const DEFAULT_BORDER = "rgba(113,113,122,0.3)";
+
+    function formatDate(dateStr) {
+      if (!dateStr) return null;
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return null;
+      return d.toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    let query = "", categoryFilter = "", sortOrder = "title-asc", currentPage = 1;
+
+    const searchInput = document.getElementById("search-input");
+    const categorySelect = document.getElementById("category-filter");
+    const sortSelect = document.getElementById("sort-select");
+    const grid = document.getElementById("games-grid");
+    const paginationEl = document.getElementById("pagination");
+    const resultsCount = document.getElementById("results-count");
+    const loadingState = document.getElementById("loading-state");
+    const emptyState = document.getElementById("empty-state");
+    const btnReset = document.getElementById("btn-reset");
+
+    function applyFilters(list) {
+      let result = [...list];
+      if (query.trim()) {
+        let regex;
+        try { regex = new RegExp(query.trim(), "i"); }
+        catch { regex = new RegExp(query.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"); }
+        result = result.filter(g => regex.test(g.title) || regex.test(g.description));
+      }
+      if (categoryFilter) result = result.filter(g => g.categorySlug === categoryFilter);
+      result.sort((a, b) => {
+        if (sortOrder === "title-asc")  return a.title.localeCompare(b.title, "es");
+        if (sortOrder === "title-desc") return b.title.localeCompare(a.title, "es");
+        if (sortOrder === "date-desc")  return new Date(b.release_date || 0).getTime() - new Date(a.release_date || 0).getTime();
+        if (sortOrder === "date-asc")   return new Date(a.release_date || 0).getTime() - new Date(b.release_date || 0).getTime();
+        return 0;
+      });
+      return result;
+    }
+
+    function renderCard(game) {
+      const date = formatDate(game.release_date);
+      const accent = game.accentColor ?? DEFAULT_ACCENT;
+      const bg = game.bgColor ?? DEFAULT_BG;
+      const border = game.borderColor ?? DEFAULT_BORDER;
+      return `
+        <a href="/games/${game.slug}" class="fade-up group flex flex-col bg-zinc-900 border border-zinc-800/80 rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-200">
+          <div class="h-0.5 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-200" style="background:${accent}"></div>
+          <div class="flex flex-col flex-1 p-5">
+            ${game.category ? `<span class="self-start text-xs font-semibold px-2.5 py-1 rounded-full border mb-3 tracking-wide" style="color:${accent}; background:${bg}; border-color:${border}">${game.category}</span>` : ""}
+            <h2 class="text-base font-bold text-zinc-100 group-hover:text-violet-400 transition-colors duration-200 line-clamp-2 mb-2 leading-snug">${game.title}</h2>
+            ${game.description ? `<p class="text-sm text-zinc-500 line-clamp-3 leading-relaxed flex-1">${game.description}</p>` : `<div class="flex-1"></div>`}
+            ${date ? `<div class="mt-4 pt-3.5 border-t border-zinc-800 flex items-center gap-1.5"><svg class="w-3 h-3 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="text-xs text-zinc-600 font-medium">${date}</span></div>` : ""}
           </div>
-        )}
-      </>
-    )}
-  </body>
-</html>
+        </a>`;
+    }
+
+    function renderPagination(total, perPage, page) {
+      const totalPages = Math.ceil(total / perPage);
+      if (totalPages <= 1) { paginationEl.innerHTML = ""; return; }
+      const base = "min-w-[38px] h-[38px] px-3 flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-150 cursor-pointer border";
+      const normal = "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200";
+      const active = "bg-violet-600 border-violet-600 text-white shadow-lg shadow-violet-500/20";
+      const disabled = "bg-zinc-900 border-zinc-800 text-zinc-700 cursor-not-allowed";
+      let html = `<button class="${base} ${page === 1 ? disabled : normal}" data-page="${page-1}" ${page===1?"disabled":""}>&#8592;</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= page-1 && i <= page+1)) {
+          html += `<button class="${base} ${i===page?active:normal}" data-page="${i}">${i}</button>`;
+        } else if (i === page-2 || i === page+2) {
+          html += `<span class="text-zinc-600 px-1">…</span>`;
+        }
+      }
+      html += `<button class="${base} ${page===totalPages?disabled:normal}" data-page="${page+1}" ${page===totalPages?"disabled":""}>&#8594;</button>`;
+      paginationEl.innerHTML = html;
+      paginationEl.querySelectorAll("button[data-page]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const p = parseInt(btn.dataset.page);
+          if (!isNaN(p)) { currentPage = p; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+        });
+      });
+    }
+
+    function render() {
+      loadingState.style.display = "flex";
+      grid.style.display = "none";
+      emptyState.style.display = "none";
+      requestAnimationFrame(() => {
+        const filtered = applyFilters(games);
+        const total = filtered.length;
+        const paginated = filtered.slice((currentPage-1)*GAMES_PER_PAGE, currentPage*GAMES_PER_PAGE);
+        resultsCount.textContent   = String(total);
+        loadingState.style.display = "none";
+        if (total === 0) {
+          emptyState.style.display = "flex";
+          grid.style.display = "none";
+          paginationEl.innerHTML = "";
+        } else {
+          emptyState.style.display = "none";
+          grid.style.display = "grid";
+          grid.innerHTML = paginated.map(renderCard).join("");
+          renderPagination(total, GAMES_PER_PAGE, currentPage);
+        }
+      });
+    }
+
+    let debounceTimer;
+    searchInput.addEventListener("input", () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => { query = searchInput.value; currentPage = 1; render(); }, 250); });
+    categorySelect.addEventListener("change", () => { categoryFilter = categorySelect.value; currentPage = 1; render(); });
+    sortSelect.addEventListener("change", () => { sortOrder = sortSelect.value; currentPage = 1; render(); });
+    btnReset.addEventListener("click", () => {
+      searchInput.value = ""; categorySelect.value = ""; sortSelect.value = "title-asc";
+      query = ""; categoryFilter = ""; sortOrder = "title-asc"; currentPage = 1;
+      render();
+    });
+
+    render();
+  </script>
+</Layout>

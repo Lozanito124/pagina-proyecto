@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_game_games",
+  "info": {
+    "displayName": "Game"
+  },
+  "options": {},
+  "attributes": {
+    "games": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::game.game"
+    }
+  },
+  "config": {}
+}

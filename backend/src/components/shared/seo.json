@@ -4,22 +4,6 @@
     "displayName": "Seo"
   },
   "options": {},
-  "attributes": {
-    "metaTitle": {
-      "type": "string",
-      "required": true
-    },
-    "metaDescription": {
-      "type": "text",
-      "required": true
-    },
-    "ogImage": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images"
-      ]
-    }
-  },
+  "attributes": {},
   "config": {}
 }

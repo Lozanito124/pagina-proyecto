@@ -1,20 +1,27 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface GameGame extends Struct.ComponentSchema {
+  collectionName: 'components_game_games';
+  info: {
+    displayName: 'Game';
+  };
+  attributes: {
+    games: Schema.Attribute.Relation<'oneToMany', 'api::game.game'>;
+  };
+}
+
 export interface SharedSeo extends Struct.ComponentSchema {
   collectionName: 'components_shared_seos';
   info: {
     displayName: 'Seo';
   };
-  attributes: {
-    metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
-    metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
-    ogImage: Schema.Attribute.Media<'images'>;
-  };
+  attributes: {};
 }
 
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'game.game': GameGame;
       'shared.seo': SharedSeo;
     }
   }

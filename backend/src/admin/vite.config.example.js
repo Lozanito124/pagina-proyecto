@@ -10,3 +10,8 @@ module.exports = (config) => {
     },
   });
 };
+export default {
+  optimizeDeps: {
+    exclude: ['path', 'fs', 'url', 'source-map-js', 'postcss', 'sanitize-html']
+  }
+}

@@ -12,17 +12,21 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "slug": {
       "type": "uid",
-      "targetField": "title",
-      "required": true
+      "targetField": "title"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "release_date": {
+      "type": "date"
     },
     "cover": {
       "type": "media",
-      "multiple": false,
+      "multiple": true,
       "allowedTypes": [
         "images",
         "files",
@@ -30,28 +34,22 @@
         "audios"
       ]
     },
-    "excerpt": {
-      "type": "text"
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "games"
     },
-    "description": {
-      "type": "blocks"
-    },
-    "rating": {
-      "type": "decimal"
-    },
-    "releaseDate": {
-      "type": "date"
-    },
-    "seo": {
-      "type": "component",
-      "component": "shared.seo",
-      "repeatable": false,
-      "required": true
-    },
-    "categories": {
+    "games": {
       "type": "relation",
       "relation": "manyToMany",
-      "target": "api::category.category",
+      "target": "api::game.game",
+      "inversedBy": "related_games"
+    },
+    "related_games": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::game.game",
       "mappedBy": "games"
     }
   }
